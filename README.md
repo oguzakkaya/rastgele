@@ -1,121 +1,123 @@
 # Rastgele
 
-Rastgele, Türkçe bir öğrenme ve anlatma oyunu. Kullanıcıya rastgele bir konu gelir, 15 dakika araştırır, notlar kapanır ve konuyu 1 dakika kendi cümleleriyle anlatır.
+Rastgele is a Turkish learning and speaking game. A random topic appears, you research it for 15 minutes, the notes close, and you explain the topic in your own words for 1 minute.
 
-## Ürün akışı
+## Product flow
 
-1. **Ana sayfa**: başla butonu ve sağında çoklu kategori listesi (varsayılan Tümü). Araştırma süresi her konuda 15 dakikadır.
-2. **Konu açılışı** (`/konu/[id]`): kısa bir açılış animasyonu, ardından konu ve 15 dakikalık süre.
-3. **Araştırma**: konu, geri sayım ve varsa yapay zekânın hazırladığı notlar.
-4. **Geçiş**: notlar kapanır. Aynı denemede notlar bir daha açılamaz (sayfa yenilense bile).
-5. **Anlatım**: 1 dakikalık geri sayım ortada başlar. Yazı alanı ve buton yoktur.
-6. **Geçmiş** (`/gecmis`): daha önce kaydedilmiş sonuçlar ve küçük istatistikler.
+1. **Home**: a start button with a multi-select category list to its right (default All). Every topic uses a 15-minute research window.
+2. **Topic reveal** (`/konu?id=`): a short opening animation, then the topic and the 15-minute window.
+3. **Research**: the topic, a countdown, and research notes when they exist. At 00:00 the screen stays on “Süre bitti” until you press the button.
+4. **Transition**: the notes close. They cannot be opened again in the same attempt, even after a reload.
+5. **Speaking**: a 1-minute countdown starts in the center. There is no text field and no buttons.
+6. **History** (`/gecmis`): saved rounds and a small set of stats.
 
-## Teknoloji
+## Technology
 
 - Next.js 16 (App Router), React 19, TypeScript (strict)
-- Tailwind CSS v4, Lucide ikonları, `class-variance-authority`
-- OpenAI Responses API + Zod ile yapılandırılmış çıktı
-- Vitest (birim), Playwright (uçtan uca)
-- Kalıcılık: MVP için `localStorage` (soyutlama katmanı ile)
+- Tailwind CSS v4, Lucide icons, `class-variance-authority`
+- OpenAI Responses API + Zod structured output
+- Vitest (unit), Playwright (end to end)
+- Persistence: `localStorage` for the MVP, behind a storage interface
 
-## Mimari
+## Architecture
 
 ```
 src/
-  app/                      Rotalar (Server Components) ve API route'ları
+  app/                      Routes (Server Components) and API routes
     api/topic|research|evaluate/route.ts
   components/
     ui/                     Button, Eyebrow
-    layout/ brand/          Header, footer, tema, logo
+    layout/ brand/          Header, footer, theme, logo
     home/ challenge/ result/ history/ stats/
-    challenge/stages/       Akışın her durumu için ayrı ekran
-  hooks/                    use-challenge-flow (yan etkiler), saat, çevrimiçi durumu
+    challenge/stages/       One screen per flow state
+  hooks/                    use-challenge-flow (side effects), clock, online status
   lib/
     types.ts                Topic, Challenge, ResearchBrief, Explanation, Evaluation...
-    schemas.ts              Zod: API istekleri + AI çıktıları
-    challenge/machine.ts    Açık durum makinesi (saf reducer)
-    challenge/persistence.ts Yarım kalan denemeyi kaydet / geri yükle
-    challenge/api.ts        İstemci → API çağrıları, çevrimdışı yedekler
-    topics/selection.ts     Rastgele seçim, tekrar önleme, kategori dengesi
-    topics/fallback/        Hazır konu havuzu
-    evaluation/             AI çıktısı ayrıştırıcı + çevrimdışı değerlendirici
+    schemas.ts              Zod: API requests + AI output
+    challenge/machine.ts    Explicit state machine (pure reducer)
+    challenge/persistence.ts Save and resume an in-progress attempt
+    challenge/api.ts        Client → API calls, offline fallbacks
+    topics/selection.ts     Random pick, repeat avoidance, category balance
+    topics/fallback/        Prepared topic pool
+    evaluation/             AI output parser + offline evaluator
     storage/                KeyValueStore + challengeStorage
-    analytics.ts            Sağlayıcıdan bağımsız olay katmanı
-    stats.ts                İstatistik ve seri hesapları
+    analytics.ts            Provider-agnostic event layer
+    stats.ts                Stats and streak math
   server/
-    ai/client.ts            OpenAI istemcisi, hata sınıflandırma
-    ai/prompts.ts           Sistem talimatları (yalnızca sunucuda)
+    ai/client.ts            OpenAI client, error classification
+    ai/prompts.ts           System instructions (server only)
     ai/services.ts          generateTopic, generateResearchBrief, evaluateExplanation
-    http.ts rate-limit.ts   Gövde boyutu sınırı, doğrulama, hız sınırı
+    http.ts rate-limit.ts   Body size limit, validation, rate limit
 ```
 
-### Önemli kararlar
+### Decisions
 
-- **Durum makinesi**: `idle → generating_topic → topic_reveal → researching → transitioning → explaining → evaluating → result`, ayrıca `skipped` ve `error`. Geçersiz olaylar yok sayılır; çift tıklama ve geç gelen yanıtlar zarar vermez.
-- **AI hiçbir zaman uygulamayı çökertmez**: her servis anahtar yoksa, zaman aşımında, rate limit'te veya geçersiz JSON'da yedek içeriğe döner.
-- **Puanlar sunucuda üretilir**: istemciden gelen puanlar şemada yoktur, yok sayılır. AI puanları 0–100 tam sayıya sıkıştırılır.
-- **Rastgelelik**: son 20 konu tekrar edilmez (havuz biterse en eski görülen seçilir). "Tümü"nde önce kategori seçilir; aynı kategoriden üçüncü konu üst üste gelmez.
-- **Sesli anlatım için hazır**: `ExplanationInput = TextExplanation | VoiceExplanation`; API ve değerlendirici ikisini de kabul eder.
+- **State machine**: `idle → generating_topic → topic_reveal → researching → transitioning → explaining → evaluating → result`, plus `skipped` and `error`. Invalid events are ignored, so double clicks and late responses are harmless.
+- **AI never takes the app down**: each service falls back when the key is missing, the request times out, the rate limit is hit, or the JSON is invalid.
+- **Scores are produced on the server**: client-supplied scores are not in the schema and are ignored. AI scores are clamped to integers from 0 to 100.
+- **Randomness**: the last 20 topics are not repeated (when the pool runs out, the oldest seen topic is chosen). “All” picks a category first; a third topic in a row from the same category is avoided.
+- **Ready for voice**: `ExplanationInput = TextExplanation | VoiceExplanation`. The API and the evaluator accept both.
 
-## Kurulum
+## Setup
 
 ```bash
 npm install
-cp .env.example .env.local   # isteğe bağlı
+cp .env.example .env.local   # optional
 npm run dev                  # http://localhost:3000
 ```
 
-## Ortam değişkenleri
+## Environment variables
 
-| Değişken | Açıklama |
+| Variable | Description |
 | --- | --- |
-| `OPENAI_API_KEY` | Boşsa uygulama yedek modda çalışır. |
-| `OPENAI_MODEL` | Varsayılan `gpt-4.1-mini`. Structured Outputs destekleyen bir model olmalı. |
-| `OPENAI_TIMEOUT_MS` | İstek zaman aşımı, varsayılan `20000`. |
-| `RASTGELE_DISABLE_AI` | `1` ise anahtar olsa bile AI kapalıdır (testlerde kullanılır). |
-| `NEXT_PUBLIC_SITE_URL` | Canonical, sitemap ve Open Graph adresi. |
+| `OPENAI_API_KEY` | When empty, the app runs in fallback mode. |
+| `OPENAI_MODEL` | Default `gpt-4.1-mini`. Must support Structured Outputs. |
+| `OPENAI_TIMEOUT_MS` | Request timeout, default `20000`. |
+| `RASTGELE_DISABLE_AI` | `1` turns AI off even if a key is set (used by tests). |
+| `NEXT_PUBLIC_SITE_URL` | Canonical, sitemap, and Open Graph URL. |
 
-## OpenAI yapılandırması
+## OpenAI setup
 
-Tüm çağrılar `src/server/ai/client.ts` içinde `responses.parse` + `zodTextFormat` ile yapılır ve dönen veri tekrar Zod ile doğrulanır. Talimatlar `src/server/ai/prompts.ts` içindedir ve istemciye gönderilmez. Kullanıcı metni değerlendirme isteminde etiketlerle ayrılır, metindeki talimatların yok sayılması istenir.
+Every call goes through `responses.parse` + `zodTextFormat` in `src/server/ai/client.ts`, and the result is validated with Zod again. Instructions live in `src/server/ai/prompts.ts` and are never sent to the client. User text is wrapped in tags in the evaluation prompt, and instructions inside that text are ignored.
 
-## Yedek (fallback) modu
+## Fallback mode
 
-Anahtar yoksa:
+When there is no key:
 
-- Konular `src/lib/topics/fallback/seeds.ts` havuzundan gelir. Her kayıt yalnızca `title` ve `category` taşır.
-- Anahtar yokken hazır araştırma notu yoktur. Notlar yalnızca yapay zekâ açıksa üretilir.
-- Değerlendirme, anlatımın notlarla veya başlıkla örtüşmesine bakan basit bir tahmindir. Sonuç sayfasında bu açıkça belirtilir.
-- Çevrimdışıyken konu seçimi ve değerlendirme tarayıcıda yapılır.
+- Topics come from the pool in `src/lib/topics/fallback/seeds.ts`. Each entry has only `title` and `category`.
+- There are no prepared research notes without a key. Notes are generated only when AI is on.
+- Evaluation is a simple estimate of how the explanation overlaps the notes or the title.
+- Offline, topic selection and evaluation run in the browser.
 
-**Yeni konu eklemek** için `seeds.ts` dizisine `{ title, category }` ekle. `id` başlıktan otomatik üretilir.
+**To add a topic**, append `{ title, category }` to the `seeds.ts` array. The `id` is generated from the title.
 
-## Komutlar
+## Scripts
 
 ```bash
-npm run dev         # geliştirme
+npm run dev         # development
 npm run lint        # ESLint
-npm run typecheck   # route tipleri + tsc
-npm test            # Vitest birim testleri
-npm run test:e2e    # Playwright (üretim derlemesi alır, AI kapalı çalışır)
-npm run build       # üretim derlemesi
-npm start           # üretim sunucusu
+npm run typecheck   # route types + tsc
+npm test            # Vitest unit tests
+npm run test:e2e    # Playwright (production build, AI off)
+npm run build       # production build
+npm start           # production server
 npm run format      # Prettier
 ```
 
-İlk E2E çalıştırmasından önce: `npx playwright install chromium`.
-Görsel inceleme için ekran görüntüleri: `SCREENS=1 npx playwright test tests/e2e/screens.spec.ts`.
+Before the first E2E run: `npx playwright install chromium`.
+Screenshots for visual review: `SCREENS=1 npx playwright test tests/e2e/screens.spec.ts`.
 
-## Yayına alma
+## Deployment
 
-Herhangi bir Node.js barındırıcısında (Vercel, Render, Fly, kendi sunucun) `npm run build && npm start` yeterli. Ortam değişkenlerini barındırıcıda tanımla.
+`npm run build && npm start` is enough on any Node.js host (Vercel, Render, Fly, your own server). Set the environment variables on the host.
 
-Hız sınırlayıcı şu an bellek içidir; birden fazla örnekte çalıştırırken `src/server/rate-limit.ts` içindeki `RateLimiter` arayüzünü Redis/Upstash ile uygula.
+The public site is GitHub Pages: https://oguzakkaya.github.io/rastgele/. Pushes to `main` run tests and publish a static export. That export has no API, so it uses the prepared topics.
 
-## Gelecek mimarisi
+The rate limiter is in memory. To run more than one instance, implement the `RateLimiter` interface in `src/server/rate-limit.ts` with Redis or Upstash.
 
-- **Hesaplar ve bulut geçmişi**: `KeyValueStore` / `challengeStorage` arayüzünü API tabanlı bir uygulamayla değiştir (Prisma + PostgreSQL).
-- **Sesli anlatım**: mikrofon → konuşmadan metne → `VoiceExplanation` → mevcut `/api/evaluate`.
-- **Analitik**: `registerAnalyticsProvider` ile PostHog / Plausible / GA4 bağla.
-- **Paylaşılabilir sonuç kartları**, yer imleri, koleksiyonlar, aralıklı tekrar, PWA.
+## Later
+
+- **Accounts and cloud history**: replace the `KeyValueStore` / `challengeStorage` interface with an API-backed implementation (Prisma + PostgreSQL).
+- **Voice explanations**: microphone → speech to text → `VoiceExplanation` → the existing `/api/evaluate`.
+- **Analytics**: connect PostHog, Plausible, or GA4 through `registerAnalyticsProvider`.
+- **Shareable result cards**, bookmarks, collections, spaced repetition, PWA.
