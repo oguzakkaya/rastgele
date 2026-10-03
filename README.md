@@ -1,5 +1,7 @@
 # Rastgele
 
+**Preview:** https://oguzakkaya.github.io/rastgele/
+
 Rastgele is a Turkish learning and speaking game. A random topic appears, you research it for 15 minutes, the notes close, and you explain the topic in your own words for 1 minute.
 
 ## Product flow
