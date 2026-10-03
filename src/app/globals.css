@@ -1,26 +1,173 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f5f2ea;
+  --paper-2: #ece7db;
+  --ink: #161513;
+  --ink-2: #4a463f;
+  --ink-3: #6b665c;
+  --line: #d9d2c3;
+  /* Accent: "Rastgele turuncusu". Text on accent uses --ink. */
+  --accent: #ff5b1f;
+  --accent-ink: #b33a0c;
+  --accent-soft: #ffe2d4;
+  --ring: #161513;
+}
+
+.dark {
+  --paper: #121110;
+  --paper-2: #1c1a18;
+  --ink: #f3efe6;
+  --ink-2: #c9c3b6;
+  --ink-3: #9d968a;
+  --line: #34302b;
+  --accent: #ff7240;
+  --accent-ink: #ff9a72;
+  --accent-soft: #3a1f14;
+  --ring: #f3efe6;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-sans-ui);
+  --font-display: var(--font-display-serif);
+  --radius-xl: 0.875rem;
+
+  --animate-rise: rise 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-fade: fade 320ms ease-out both;
+  --animate-close: close 520ms cubic-bezier(0.6, 0, 0.4, 1) both;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sand-fall {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}
+
+.sand-grain {
+  animation: sand-fall 680ms linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.sand-grain-delay {
+  animation-delay: 340ms;
+}
+
+@keyframes speak-pulse {
+  0% {
+    transform: scale(0.72);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.18);
+    opacity: 0;
+  }
+}
+
+.speak-pulse {
+  animation: speak-pulse 1.8s ease-out infinite;
+}
+
+.speak-pulse-delay {
+  animation-delay: 0.9s;
+}
+
+@keyframes close {
+  from {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans-ui), system-ui, sans-serif;
+  font-feature-settings: "ss01";
+}
+
+::selection {
+  background: var(--accent);
+  color: #161513;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Homepage is a single screen: header, content, and footer share the viewport. */
+body:has([data-screen="home"]) {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+body:has([data-screen="home"]) > header {
+  padding-top: clamp(0.75rem, 2dvh, 1.75rem);
+}
+
+body:has([data-screen="home"]) > footer {
+  padding-top: clamp(0.75rem, 2dvh, 1.25rem);
+  padding-bottom: clamp(0.75rem, 2dvh, 1.25rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
 }
