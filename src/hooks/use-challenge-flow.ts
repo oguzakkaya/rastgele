@@ -59,7 +59,7 @@ export function useChallengeFlow(options: FlowOptions) {
       // The /konu/[id] page remounts and resumes from this saved attempt.
       storage.setActive({ challenge, brief: null, phase: "reveal" });
       if (!prefersReducedMotion()) playTopicFound();
-      router.replace(`/konu/${challenge.id}`);
+      router.replace(`/konu?id=${challenge.id}`);
     } catch {
       dispatch({ type: "TOPIC_FAILED" });
     }
@@ -108,7 +108,7 @@ export function useChallengeFlow(options: FlowOptions) {
         getChallengeStorage().saveResult(result);
         track("challenge_completed", { topicId: challenge.topic.id, score: evaluation.overallScore, source: evaluation.source });
         dispatch({ type: "EVALUATION_DONE", resultId: result.id });
-        router.push(`/sonuc/${result.id}`);
+        router.push(`/sonuc?id=${result.id}`);
       })
       .catch(() => dispatch({ type: "EVALUATION_FAILED" }))
       .finally(() => {

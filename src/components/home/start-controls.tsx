@@ -65,7 +65,7 @@ function StartControlsInner({ initial }: { initial: TopicCategory[] }) {
     event.preventDefault();
     getChallengeStorage().savePreferences({ categories });
     primeTopicSpin();
-    router.push("/konu/yeni");
+    router.push("/konu?id=yeni");
   };
 
   return (

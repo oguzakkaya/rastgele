@@ -21,7 +21,7 @@ export function ResultView({ result }: { result: ChallengeResult }) {
         <p className="text-lg text-ink-2">Bu konuyu anlattın.</p>
       </header>
       <div>
-        <ButtonLink href="/konu/yeni" variant="accent" size="lg" onClick={primeTopicSpin}>
+        <ButtonLink href="/konu?id=yeni" variant="accent" size="lg" onClick={primeTopicSpin}>
           <Shuffle className="size-5" aria-hidden /> Bir Tane Daha
         </ButtonLink>
       </div>

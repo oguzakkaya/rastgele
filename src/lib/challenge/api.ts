@@ -36,9 +36,15 @@ export async function fetchTopic(
   filters: SelectionFilters,
   recent: RecentTopicEntry[],
 ): Promise<Offlineable<Topic>> {
-  if (isOffline()) return { value: selectTopic(FALLBACK_TOPICS, filters, recent), offline: true };
-  const { topic } = await post<{ topic: Topic }>("/api/topic", { ...filters, recent });
-  return { value: topic, offline: false };
+  if (!isOffline()) {
+    try {
+      const { topic } = await post<{ topic: Topic }>("/api/topic", { ...filters, recent });
+      return { value: topic, offline: false };
+    } catch {
+      // Static hosting has no API. The prepared topics still start a round.
+    }
+  }
+  return { value: selectTopic(FALLBACK_TOPICS, filters, recent), offline: true };
 }
 
 function minimalBrief(topic: Topic): ResearchBrief {

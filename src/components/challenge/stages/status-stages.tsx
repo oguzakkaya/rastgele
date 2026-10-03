@@ -86,7 +86,7 @@ export function NotFoundStage({ onNew, resultId }: { onNew: () => void; resultId
       </p>
       <div className="flex flex-col gap-3 sm:flex-row">
         {resultId && (
-          <ButtonLink href={`/sonuc/${resultId}`} variant="outline" size="lg">
+          <ButtonLink href={`/sonuc?id=${resultId}`} variant="outline" size="lg">
             Sonucu gör
           </ButtonLink>
         )}

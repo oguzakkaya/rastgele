@@ -20,7 +20,7 @@ export function ResultLoader({ id }: { id: string }) {
       <StageHeading className="text-4xl sm:text-5xl">Bu sonucu bulamadık.</StageHeading>
       <p className="text-ink-2">Sonuçlar şimdilik yalnızca bu cihazda saklanıyor.</p>
       <div>
-        <ButtonLink href="/konu/yeni" variant="accent" size="lg" onClick={primeTopicSpin}>
+        <ButtonLink href="/konu?id=yeni" variant="accent" size="lg" onClick={primeTopicSpin}>
           <Shuffle className="size-5" aria-hidden /> Yeni bir konu
         </ButtonLink>
       </div>

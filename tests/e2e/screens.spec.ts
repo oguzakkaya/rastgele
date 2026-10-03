@@ -10,7 +10,7 @@ test("capture screens", async ({ page }, info) => {
   await page.waitForTimeout(600);
   await page.screenshot({ path: `${dir}/1-home.png`, fullPage: true });
 
-  await page.goto("/konu/yeni");
+  await page.goto("/konu?id=yeni");
   await page.getByRole("button", { name: "Araştırmaya Başla" }).click({ timeout: 15000 });
   await page.waitForTimeout(500);
   await page.screenshot({ path: `${dir}/2-research.png` });

@@ -19,7 +19,7 @@ export function HistoryList() {
     return (
       <div className="space-y-6 py-10">
         <p className="text-lg text-ink-2">Henüz bir konu anlatmadın. İlki rastgele gelsin.</p>
-        <ButtonLink href="/konu/yeni" variant="accent" size="lg" onClick={primeTopicSpin}>
+        <ButtonLink href="/konu?id=yeni" variant="accent" size="lg" onClick={primeTopicSpin}>
           <Shuffle className="size-5" aria-hidden /> Rastgele Başla
         </ButtonLink>
       </div>
@@ -33,7 +33,7 @@ export function HistoryList() {
         {history.map((r) => (
           <li key={r.id}>
             <Link
-              href={`/sonuc/${r.id}`}
+              href={`/sonuc?id=${r.id}`}
               className="group block py-5 transition-colors hover:bg-paper-2 sm:px-3"
             >
               <p className="font-display text-xl leading-snug group-hover:underline sm:text-2xl">
