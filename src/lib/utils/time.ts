@@ -6,7 +6,7 @@ export function formatClock(totalSeconds: number): string {
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
-/** Human friendly Turkish duration, e.g. "3 dk", "1 sa 12 dk". */
+/** Short duration label for the UI. */
 export function formatDurationTr(totalSeconds: number): string {
   const safe = Math.max(0, Math.round(totalSeconds));
   if (safe < 60) return `${safe} sn`;
@@ -16,7 +16,7 @@ export function formatDurationTr(totalSeconds: number): string {
   return minutes > 0 ? `${hours} sa ${minutes} dk` : `${hours} sa`;
 }
 
-/** Turkish copy for the reveal screen: "3 dakikan var." / "1 dakikan var." */
+/** Duration sentence shown on the topic reveal screen. */
 export function minutesCopy(seconds: number): string {
   if (seconds < 60) return `${seconds} saniyen var.`;
   const minutes = Math.max(1, Math.round(seconds / 60));

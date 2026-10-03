@@ -1,5 +1,4 @@
 import "server-only";
-import { CATEGORY_LABELS } from "@/lib/copy";
 import { heuristicEvaluation } from "@/lib/evaluation/heuristic";
 import { parseEvaluation } from "@/lib/evaluation/parse";
 import { aiBriefSchema, aiEvaluationSchema, aiTopicSchema, researchBriefSchema, topicSchema } from "@/lib/schemas";
@@ -23,6 +22,19 @@ function logAiFailure(scope: string, error: unknown) {
   const kind = error instanceof AiError ? error.kind : "unknown";
   if (kind !== "missing_key") console.warn(`[ai:${scope}] falling back (${kind})`);
 }
+
+const CATEGORY_NAMES: Record<TopicCategory, string> = {
+  "genel-kultur": "general knowledge",
+  bilim: "science",
+  teknoloji: "technology",
+  tarih: "history",
+  cografya: "geography",
+  sanat: "art",
+  ekonomi: "economics",
+  psikoloji: "psychology",
+  doga: "nature",
+  mitoloji: "mythology",
+};
 
 function resolveCategory(filters: SelectionFilters, recent: readonly RecentTopicEntry[]): TopicCategory {
   const allowed = filters.categories.length > 0 ? filters.categories : TOPIC_CATEGORIES;
@@ -48,8 +60,8 @@ export async function generateTopic(
       instructions: TOPIC_INSTRUCTIONS,
       temperature: 1,
       input: [
-        `Kategori: ${CATEGORY_LABELS[category]}`,
-        `Son konular (bunlara benzeme): ${recent.map((r) => r.title).join("; ") || "yok"}`,
+        `Category: ${CATEGORY_NAMES[category]}`,
+        `Recent topics (do not resemble these): ${recent.map((r) => r.title).join("; ") || "none"}`,
       ].join("\n"),
     });
     return topicSchema.parse({
@@ -74,7 +86,7 @@ export async function generateResearchBrief(topic: Topic): Promise<ResearchBrief
       name: "research_brief",
       instructions: BRIEF_INSTRUCTIONS,
       temperature: 0.4,
-      input: `Konu: ${topic.title}`,
+      input: `Topic: ${topic.title}`,
     });
     return researchBriefSchema.parse({
       topicId: topic.id,
@@ -109,11 +121,11 @@ export async function evaluateExplanation(
       instructions: EVALUATION_INSTRUCTIONS,
       temperature: 0.2,
       input: [
-        `Konu: ${topic.title}`,
-        `Araştırma notları:\n${brief.summary}\n${brief.sections.map((s) => `${s.heading}: ${s.content}`).join("\n")}`,
-        `Ana fikirler:\n- ${brief.keyPoints.join("\n- ")}`,
-        `Anlatım türü: ${input.kind === "voice" ? "sesli anlatımın yazıya dökülmüş hali" : "yazılı"}`,
-        `<kullanici_anlatimi>\n${text}\n</kullanici_anlatimi>`,
+        `Topic: ${topic.title}`,
+        `Research notes:\n${brief.summary}\n${brief.sections.map((s) => `${s.heading}: ${s.content}`).join("\n")}`,
+        `Key points:\n- ${brief.keyPoints.join("\n- ")}`,
+        `Explanation type: ${input.kind === "voice" ? "speech transcript" : "written"}`,
+        `<user_explanation>\n${text}\n</user_explanation>`,
       ].join("\n\n"),
     });
     const evaluation = parseEvaluation(raw, "ai");

@@ -34,10 +34,10 @@ export function ResearchStage({
 
       {hasNotes && (
         <section
-          aria-labelledby="notlar"
+          aria-labelledby="notes"
           className="mx-auto mt-6 max-h-[22dvh] w-full max-w-2xl overflow-y-auto rounded-xl bg-paper-2 p-5"
         >
-          <h2 id="notlar" className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-3">
+          <h2 id="notes" className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-3">
             Araştırma Notları
           </h2>
           {brief.summary && <p className="mt-3 leading-relaxed">{brief.summary}</p>}

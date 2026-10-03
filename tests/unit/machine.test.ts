@@ -73,7 +73,7 @@ describe("challenge state machine", () => {
   });
 
   it("keeps the explanation on evaluation failure and can retry", () => {
-    const explanation = { kind: "text" as const, text: "anlatım", durationSeconds: 5 };
+    const explanation = { kind: "text" as const, text: "explanation", durationSeconds: 5 };
     const failed = run(
       { type: "GENERATE" },
       { type: "TOPIC_READY", challenge },
@@ -81,14 +81,14 @@ describe("challenge state machine", () => {
       { type: "START_RESEARCH", now: 0 },
       { type: "FINISH_RESEARCH", now: 1000 },
       { type: "TRANSITION_DONE", now: 2000 },
-      { type: "UPDATE_DRAFT", draft: "anlatım" },
+      { type: "UPDATE_DRAFT", draft: "explanation" },
       { type: "SUBMIT", explanation },
       { type: "EVALUATION_FAILED" },
     );
     expect(failed.status).toBe("error");
     expect(flowReducer(failed, { type: "RETRY_EVALUATION" }).status).toBe("evaluating");
     const back = flowReducer(failed, { type: "BACK_TO_EXPLAIN" });
-    expect(back.status === "explaining" && back.draft).toBe("anlatım");
+    expect(back.status === "explaining" && back.draft).toBe("explanation");
   });
 
   it("ignores late topic results after skipping", () => {

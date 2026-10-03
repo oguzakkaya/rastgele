@@ -1,6 +1,6 @@
 # Rastgele
 
-**Preview:** https://oguzakkaya.github.io/rastgele/
+**Preview:** https://rastgeleco.github.io/rastgele/
 
 Rastgele is a Turkish learning and speaking game. A random topic appears, you research it for 15 minutes, the notes close, and you explain the topic in your own words for 1 minute.
 
@@ -8,7 +8,7 @@ Rastgele is a Turkish learning and speaking game. A random topic appears, you re
 
 1. **Home**: a start button with a multi-select category list to its right (default All). Every topic uses a 15-minute research window.
 2. **Topic reveal** (`/konu?id=`): a short opening animation, then the topic and the 15-minute window.
-3. **Research**: the topic, a countdown, and research notes when they exist. At 00:00 the screen stays on “Süre bitti” until you press the button.
+3. **Research**: the topic, a countdown, and research notes when they exist. At 00:00 the screen stays on the time-up message until you press the button.
 4. **Transition**: the notes close. They cannot be opened again in the same attempt, even after a reload.
 5. **Speaking**: a 1-minute countdown starts in the center. There is no text field and no buttons.
 6. **History** (`/gecmis`): saved rounds and a small set of stats.
@@ -113,7 +113,7 @@ Screenshots for visual review: `SCREENS=1 npx playwright test tests/e2e/screens.
 
 `npm run build && npm start` is enough on any Node.js host (Vercel, Render, Fly, your own server). Set the environment variables on the host.
 
-The public site is GitHub Pages: https://oguzakkaya.github.io/rastgele/. Pushes to `main` run tests and publish a static export. That export has no API, so it uses the prepared topics.
+The public site is GitHub Pages: https://rastgeleco.github.io/rastgele/. Pushes to `main` run tests and publish a static export. That export has no API, so it uses the prepared topics.
 
 The rate limiter is in memory. To run more than one instance, implement the `RateLimiter` interface in `src/server/rate-limit.ts` with Redis or Upstash.
 

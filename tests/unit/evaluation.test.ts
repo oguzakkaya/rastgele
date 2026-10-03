@@ -10,11 +10,11 @@ const valid = {
   accuracy: 90,
   clarity: 75,
   coverage: 80,
-  strengths: ["İyi"],
+  strengths: ["Good"],
   missingPoints: [],
   incorrectClaims: [],
-  feedback: "Fena değil.",
-  exampleExplanation: "Örnek.",
+  feedback: "Not bad.",
+  exampleExplanation: "Example.",
 };
 
 describe("score validation", () => {
@@ -41,7 +41,7 @@ describe("evaluation parser", () => {
   });
 
   it("returns null for unexpected shapes", () => {
-    expect(parseEvaluation({ overallScore: "çok iyi" }, "ai")).toBeNull();
+    expect(parseEvaluation({ overallScore: "very good" }, "ai")).toBeNull();
     expect(parseEvaluation(null, "ai")).toBeNull();
   });
 
@@ -63,7 +63,7 @@ describe("request validation", () => {
     const ok = evaluateRequestSchema.safeParse({
       topic,
       brief,
-      explanation: { kind: "text", text: "merhaba dünya", durationSeconds: 10 },
+      explanation: { kind: "text", text: "hello world", durationSeconds: 10 },
       overallScore: 100,
     });
     expect(ok.success).toBe(true);
@@ -86,9 +86,9 @@ describe("offline heuristic evaluator", () => {
     const good = heuristicEvaluation(
       topic,
       brief,
-      "Plasebo etken madde içermeyen bir tedavi. İnsan iyileşeceğine inanınca beklenti beyinde ağrıyı azaltan maddelerin salgılanmasını tetikliyor. Nosebo da olumsuz beklentiyle yan etki yaratıyor. İlaç denemelerinde plasebo grubu kontrol için kullanılır.",
+      "A plasebo is a treatment with no active ingredient, and belief can change how the body responds.",
     );
-    const bad = heuristicEvaluation(topic, brief, "Bugün hava çok güzeldi ve parkta yürüyüş yaptım.");
+    const bad = heuristicEvaluation(topic, brief, "The weather was nice and I walked in the park.");
     expect(good.overallScore).toBeGreaterThan(bad.overallScore);
     expect(good.source).toBe("fallback");
     expect(good.incorrectClaims).toEqual([]);

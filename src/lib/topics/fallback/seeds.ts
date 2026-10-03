@@ -1,8 +1,8 @@
 import type { FallbackTopicSeed } from "./types";
 
 /**
- * Geçici örnek havuz: her kategoriden bir konu.
- * Yeni konular bu diziye aynı şekle uygun olarak eklenebilir.
+ * Temporary sample pool: one topic per category.
+ * Add new topics to this array in the same shape.
  */
 export const FALLBACK_SEEDS: FallbackTopicSeed[] = [
   { title: "Fermi Paradoksu", category: "bilim" },

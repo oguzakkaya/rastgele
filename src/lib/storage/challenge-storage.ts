@@ -30,14 +30,14 @@ function isTopicCategory(value: unknown): value is TopicCategory {
   return typeof value === "string" && (TOPIC_CATEGORIES as readonly string[]).includes(value);
 }
 
-/** Drops unknown values. Selecting every category collapses back to "Tümü". */
+/** Drops unknown values. Selecting every category collapses back to all. */
 export function normalizeCategories(values: readonly unknown[]): TopicCategory[] {
   const unique = [...new Set(values.filter(isTopicCategory))];
   return unique.length === TOPIC_CATEGORIES.length ? [] : unique;
 }
 
 /**
- * In-progress challenge kept in storage so /konu/[id] survives a reload.
+ * In-progress challenge kept in storage so a reload can resume it.
  * Once phase is "explain" the notes must never be shown again.
  */
 export type ActiveChallenge = {

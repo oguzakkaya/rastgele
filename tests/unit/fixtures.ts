@@ -3,7 +3,7 @@ import type { ChallengeResult, Topic, TopicCategory } from "@/lib/types";
 export function makeTopic(id: string, category: TopicCategory = "bilim", overrides: Partial<Topic> = {}): Topic {
   return {
     id,
-    title: `Konu ${id}`,
+    title: `Topic ${id}`,
     category,
     source: "fallback",
     ...overrides,
@@ -19,7 +19,7 @@ export function makeResult(id: string, completedAt: string, score = 80, override
       preferences: { categories: [] },
       createdAt: completedAt,
     },
-    explanation: { kind: "text", text: "metin", durationSeconds: 30, wordCount: 1, submittedAt: completedAt },
+    explanation: { kind: "text", text: "text", durationSeconds: 30, wordCount: 1, submittedAt: completedAt },
     evaluation: {
       overallScore: score,
       understanding: score,

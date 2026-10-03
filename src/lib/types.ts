@@ -45,7 +45,7 @@ export type ResearchSection = {
 };
 
 export type ChallengePreferences = {
-  /** Empty means every category ("Tümü"). */
+  /** Empty means every category. */
   categories: TopicCategory[];
 };
 
