@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   ...(pages
     ? {
         output: "export" as const,
-        basePath: "/ratgele",
+        basePath: "/rastgele",
         trailingSlash: true,
       }
     : {}),

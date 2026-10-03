@@ -43,7 +43,7 @@ jobs:
       - name: Export static site
         env:
           GITHUB_PAGES: "1"
-          NEXT_PUBLIC_SITE_URL: https://oguzakkaya.github.io/ratgele
+          NEXT_PUBLIC_SITE_URL: https://oguzakkaya.github.io/rastgele
         run: |
           rm -rf src/app/api
           npm run build
