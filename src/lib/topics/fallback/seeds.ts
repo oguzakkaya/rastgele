@@ -9,6 +9,7 @@ export const FALLBACK_SEEDS: FallbackTopicSeed[] = [
   { id: "pompeii-neden-bu-kadar-iyi-korunmus-durumda", title: "Pompeii neden bu kadar iyi korunmuş durumda?", category: "tarih" },
   { id: "matbaa-dunyayi-nasil-degistirdi", title: "Matbaa dünyayı nasıl değiştirdi?", category: "genel-kultur" },
   { id: "lindy-etkisi", title: "Lindy etkisi", category: "genel-kultur" },
+  { id: "diderot-etkisi", title: "Diderot etkisi", category: "psikoloji" },
   { id: "coller-neden-cogunlukla-belirli-enlemlerde", title: "Çöller neden çoğunlukla belirli enlemlerde?", category: "cografya" },
   { id: "perspektif-resmi-nasil-degistirdi", title: "Perspektif resmi nasıl değiştirdi?", category: "sanat" },
   { id: "bir-ulkenin-para-birimi-neden-deger-kaybeder", title: "Bir ülkenin para birimi neden değer kaybeder?", category: "ekonomi" },
