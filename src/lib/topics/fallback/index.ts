@@ -3,7 +3,7 @@ import { slugify } from "@/lib/utils/text";
 import { FALLBACK_SEEDS } from "./seeds";
 
 export const FALLBACK_TOPICS: Topic[] = FALLBACK_SEEDS.map((seed) => ({
-  id: slugify(seed.title),
+  id: seed.id || slugify(seed.title),
   title: seed.title,
   category: seed.category,
   source: "fallback",

@@ -140,6 +140,40 @@ export function playTopicFound(): void {
   chime(audio, now + 0.1, 987.77, 0.2, 0.42);
 }
 
+/** Two clock clicks when ten seconds of speaking remain, then silence. */
+export function playTickTock(): void {
+  const audio = audioContext();
+  if (!audio) return;
+  const click = (when: number, tock: boolean) => {
+    const buffer = noiseBed(audio);
+    const out = audio.createGain();
+    out.gain.value = 0.9;
+    out.connect(audio.destination);
+    strike(audio, buffer, when, out, {
+      type: "highpass",
+      freq: tock ? 900 : 2200,
+      q: 0.8,
+      peak: tock ? 0.22 : 0.34,
+      decay: 0.004,
+    });
+    strike(audio, buffer, when, out, {
+      type: "bandpass",
+      freq: tock ? 420 : 1400,
+      q: 4,
+      peak: tock ? 0.28 : 0.2,
+      decay: tock ? 0.03 : 0.012,
+    });
+  };
+  const start = () => {
+    if (audio.state !== "running") return;
+    const now = audio.currentTime;
+    click(now, false);
+    click(now + 0.16, true);
+  };
+  if (audio.state === "running") start();
+  else void audio.resume().then(start);
+}
+
 /** Five rising tones when a countdown reaches zero. The last one rings. */
 export function playTimeUp(): void {
   const audio = audioContext();

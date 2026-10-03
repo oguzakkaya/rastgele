@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useCountdown } from "@/hooks/use-clock";
-import { primeTopicSpin } from "@/lib/sound/topic-spin";
+import { playTickTock, primeTopicSpin } from "@/lib/sound/topic-spin";
 import { EXPLAIN_DURATION_SECONDS, type Challenge } from "@/lib/types";
 import { SpeakTimer } from "../speak-timer";
 import { StageHeading } from "../stage-heading";
@@ -18,10 +18,22 @@ export function ExplainStage({
   onExpire: () => void;
 }) {
   const left = useCountdown(startedAt, EXPLAIN_DURATION_SECONDS, onExpire);
+  const previous = useRef<number | null>(null);
+  const warned = useRef(false);
 
   useEffect(() => {
     primeTopicSpin();
   }, []);
+
+  useEffect(() => {
+    const before = previous.current;
+    previous.current = left;
+    if (warned.current || left <= 0) return;
+    const reachedTen = left === 10 || (before !== null && before > 10 && left < 10);
+    if (!reachedTen) return;
+    warned.current = true;
+    playTickTock();
+  }, [left]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col py-6 sm:py-8">

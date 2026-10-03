@@ -113,7 +113,7 @@ Screenshots for visual review: `SCREENS=1 npx playwright test tests/e2e/screens.
 
 `npm run build && npm start` is enough on any Node.js host (Vercel, Render, Fly, your own server). Set the environment variables on the host.
 
-The public site is GitHub Pages: https://rastgeleco.github.io/rastgele/. Pushes to `main` run tests and publish a static export. That export has no API, so it uses the prepared topics.
+The public site is GitHub Pages: https://rastgeleco.github.io/rastgele/. `oguzakkaya/rastgele` is the source repository. A push to its `main` branch runs tests, publishes https://oguzakkaya.github.io/rastgele/, and copies that same commit to `rastgeleco/rastgele`, which publishes the preview. The static export has no API, so it uses the prepared topics.
 
 The rate limiter is in memory. To run more than one instance, implement the `RateLimiter` interface in `src/server/rate-limit.ts` with Redis or Upstash.
 

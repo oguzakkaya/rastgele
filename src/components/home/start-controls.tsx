@@ -8,6 +8,7 @@ import { useHydrated } from "@/hooks/use-hydrated";
 import { CATEGORY_CHOICE_LABELS, CATEGORY_LABELS } from "@/lib/copy";
 import { primeTopicSpin } from "@/lib/sound/topic-spin";
 import { DEFAULT_PREFERENCES, getChallengeStorage, normalizeCategories } from "@/lib/storage/challenge-storage";
+import { getFallbackTopic } from "@/lib/topics/fallback";
 import { TOPIC_CATEGORIES, type TopicCategory } from "@/lib/types";
 import { cn } from "@/lib/utils/cn";
 
@@ -65,7 +66,9 @@ function StartControlsInner({ initial }: { initial: TopicCategory[] }) {
     event.preventDefault();
     getChallengeStorage().savePreferences({ categories });
     primeTopicSpin();
-    router.push("/konu?id=yeni");
+    const requested = new URLSearchParams(window.location.search).get("id");
+    const pinned = requested ? getFallbackTopic(requested) : undefined;
+    router.push(pinned ? `/konu?id=${encodeURIComponent(pinned.id)}` : "/konu?id=yeni");
   };
 
   return (

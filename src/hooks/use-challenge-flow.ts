@@ -8,6 +8,7 @@ import { flowReducer, initialFlowState, type FlowState } from "@/lib/challenge/m
 import { fromActive, toActive } from "@/lib/challenge/persistence";
 import { playTimeUp, playTopicFound, primeTopicSpin, TOPIC_SPIN_MS } from "@/lib/sound/topic-spin";
 import { getChallengeStorage } from "@/lib/storage/challenge-storage";
+import { getFallbackTopic } from "@/lib/topics/fallback";
 import type { Challenge, ChallengeResult, ExplanationInput } from "@/lib/types";
 import { countWords, createId } from "@/lib/utils/text";
 
@@ -24,8 +25,8 @@ function prefersReducedMotion() {
  * Must only run in the browser (reads local storage).
  */
 function initFlow(options: FlowOptions): FlowState {
+  if (options.routeId === "yeni" || getFallbackTopic(options.routeId)) return { status: "generating_topic" };
   const active = getChallengeStorage().getActive();
-  if (options.routeId === "yeni") return { status: "generating_topic" };
   if (active?.challenge.id === options.routeId) return fromActive(active, Date.now());
   return initialFlowState;
 }
@@ -37,15 +38,23 @@ export function useChallengeFlow(options: FlowOptions) {
   const briefRequestedFor = useRef<string | null>(null);
   const evaluatingRef = useRef(false);
 
+  const routeId = options.routeId;
   const generate = useCallback(async () => {
     primeTopicSpin();
     const storage = getChallengeStorage();
     const prefs = storage.getPreferences();
+    const pinned = routeId === "yeni" ? undefined : getFallbackTopic(routeId);
     dispatch({ type: "GENERATE" });
     track("challenge_started", { categories: prefs.categories.join(",") || "tumu" });
+    if (routeId !== "yeni" && !pinned) {
+      dispatch({ type: "TOPIC_FAILED" });
+      return;
+    }
     try {
       const [{ value: topic }] = await Promise.all([
-        fetchTopic({ categories: prefs.categories }, storage.getRecentTopics()),
+        pinned
+          ? Promise.resolve({ value: pinned })
+          : fetchTopic({ categories: prefs.categories }, storage.getRecentTopics()),
         delay(prefersReducedMotion() ? 0 : TOPIC_SPIN_MS),
       ]);
       const challenge: Challenge = {
@@ -63,7 +72,7 @@ export function useChallengeFlow(options: FlowOptions) {
     } catch {
       dispatch({ type: "TOPIC_FAILED" });
     }
-  }, [router]);
+  }, [router, routeId]);
 
   useEffect(() => {
     if (startedRef.current) return;
