@@ -14,6 +14,7 @@ export const FALLBACK_SEEDS: FallbackTopicSeed[] = [
   { id: "zeigarnik-etkisi", title: "Zeigarnik etkisi", category: "psikoloji" },
   { id: "peak-end-kurali", title: "Peak-end kuralı", category: "psikoloji" },
   { id: "hedonik-adaptasyon", title: "Hedonik adaptasyon", category: "psikoloji" },
+  { id: "kumarbazin-yanilgisi", title: "Kumarbazın yanılgısı", category: "psikoloji" },
   { id: "coller-neden-cogunlukla-belirli-enlemlerde", title: "Çöller neden çoğunlukla belirli enlemlerde?", category: "cografya" },
   { id: "perspektif-resmi-nasil-degistirdi", title: "Perspektif resmi nasıl değiştirdi?", category: "sanat" },
   { id: "bir-ulkenin-para-birimi-neden-deger-kaybeder", title: "Bir ülkenin para birimi neden değer kaybeder?", category: "ekonomi" },
