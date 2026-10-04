@@ -75,7 +75,7 @@ function Stage({
           challenge={state.challenge}
           brief={state.brief}
           startedAt={state.startedAt}
-          clockSpeed={options.clockSpeed ?? 1}
+          clockSpeed={clockSpeed}
           onFinish={actions.finishResearch}
         />
       );
