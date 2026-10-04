@@ -37,14 +37,24 @@ function ChallengeFlowInner({ options }: { options: FlowOptions }) {
   return (
     <div className="flex flex-1 flex-col" data-state={state.status}>
       {!online && <OfflineNotice />}
-      <Stage state={state} actions={actions} completedResultId={completedResultId} />
+      <Stage
+        state={state}
+        actions={actions}
+        completedResultId={completedResultId}
+        clockSpeed={options.clockSpeed ?? 1}
+      />
     </div>
   );
 }
 
 type FlowHook = ReturnType<typeof useChallengeFlow>;
 
-function Stage({ state, actions, completedResultId }: FlowHook & { completedResultId?: string }) {
+function Stage({
+  state,
+  actions,
+  completedResultId,
+  clockSpeed,
+}: FlowHook & { completedResultId?: string; clockSpeed: number }) {
   switch (state.status) {
     case "idle":
       return <NotFoundStage onNew={actions.generate} resultId={completedResultId} />;
@@ -65,6 +75,7 @@ function Stage({ state, actions, completedResultId }: FlowHook & { completedResu
           challenge={state.challenge}
           brief={state.brief}
           startedAt={state.startedAt}
+          clockSpeed={options.clockSpeed ?? 1}
           onFinish={actions.finishResearch}
         />
       );

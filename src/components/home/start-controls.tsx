@@ -10,6 +10,7 @@ import { primeTopicSpin } from "@/lib/sound/topic-spin";
 import { DEFAULT_PREFERENCES, getChallengeStorage, normalizeCategories } from "@/lib/storage/challenge-storage";
 import { getFallbackTopic } from "@/lib/topics/fallback";
 import { TOPIC_CATEGORIES, type TopicCategory } from "@/lib/types";
+import { challengePath } from "@/lib/utils/time";
 import { cn } from "@/lib/utils/cn";
 
 function summary(categories: readonly TopicCategory[]): string {
@@ -66,9 +67,10 @@ function StartControlsInner({ initial }: { initial: TopicCategory[] }) {
     event.preventDefault();
     getChallengeStorage().savePreferences({ categories });
     primeTopicSpin();
-    const requested = new URLSearchParams(window.location.search).get("id");
+    const search = new URLSearchParams(window.location.search);
+    const requested = search.get("id");
     const pinned = requested ? getFallbackTopic(requested) : undefined;
-    router.push(pinned ? `/konu?id=${encodeURIComponent(pinned.id)}` : "/konu?id=yeni");
+    router.push(challengePath(pinned ? pinned.id : "yeni", search.get("speed")));
   };
 
   return (

@@ -3,7 +3,7 @@ import { flowReducer, initialFlowState, notesVisible, type FlowState } from "@/l
 import { fromActive, toActive } from "@/lib/challenge/persistence";
 import { getFallbackBrief } from "@/lib/topics/fallback";
 import { RESEARCH_DURATION_SECONDS, type Challenge } from "@/lib/types";
-import { formatClock, remainingSeconds } from "@/lib/utils/time";
+import { challengePath, formatClock, remainingSeconds, researchClockSpeed } from "@/lib/utils/time";
 import { makeTopic } from "./fixtures";
 
 const topic = makeTopic("t1");
@@ -26,6 +26,10 @@ describe("timer state", () => {
     expect(remainingSeconds(0, 180, 500_000)).toBe(0);
     expect(remainingSeconds(0, 900, 500, 2)).toBe(899);
     expect(remainingSeconds(0, 900, 450_000, 2)).toBe(0);
+    expect(researchClockSpeed("2x")).toBe(2);
+    expect(researchClockSpeed(null)).toBe(1);
+    expect(challengePath("yeni", "2x")).toBe("/konu?id=yeni&speed=2x");
+    expect(challengePath("yeni", null)).toBe("/konu?id=yeni");
     expect(formatClock(180)).toBe("03:00");
     expect(formatClock(5)).toBe("00:05");
   });

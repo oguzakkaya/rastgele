@@ -11,8 +11,9 @@ import { getChallengeStorage } from "@/lib/storage/challenge-storage";
 import { getFallbackTopic } from "@/lib/topics/fallback";
 import type { Challenge, ChallengeResult, ExplanationInput } from "@/lib/types";
 import { countWords, createId } from "@/lib/utils/text";
+import { challengePath } from "@/lib/utils/time";
 
-export type FlowOptions = { routeId: string };
+export type FlowOptions = { routeId: string; clockSpeed?: number };
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -68,7 +69,8 @@ export function useChallengeFlow(options: FlowOptions) {
       // The /konu/[id] page remounts and resumes from this saved attempt.
       storage.setActive({ challenge, brief: null, phase: "reveal" });
       if (!prefersReducedMotion()) playTopicFound();
-      router.replace(`/konu?id=${challenge.id}`);
+      const speed = new URLSearchParams(window.location.search).get("speed");
+      router.replace(challengePath(challenge.id, speed));
     } catch {
       dispatch({ type: "TOPIC_FAILED" });
     }

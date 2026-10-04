@@ -16,6 +16,18 @@ export function formatDurationTr(totalSeconds: number): string {
   return minutes > 0 ? `${hours} sa ${minutes} dk` : `${hours} sa`;
 }
 
+/** `?speed=2x` on the homepage runs the research clock at double speed. */
+export function researchClockSpeed(param: string | null): number {
+  return param === "2x" ? 2 : 1;
+}
+
+/** Topic route that keeps a homepage `speed=2x` flag when one was set. */
+export function challengePath(id: string, speed: string | null): string {
+  const params = new URLSearchParams({ id });
+  if (speed === "2x") params.set("speed", "2x");
+  return `/konu?${params.toString()}`;
+}
+
 /** Duration sentence shown on the topic reveal screen. */
 export function minutesCopy(seconds: number): string {
   if (seconds < 60) return `${seconds} saniyen var.`;

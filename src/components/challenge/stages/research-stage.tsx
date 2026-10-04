@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-clock";
 import { playTimeUp } from "@/lib/sound/topic-spin";
-import { RESEARCH_CLOCK_SPEED, RESEARCH_DURATION_SECONDS, type Challenge, type ResearchBrief } from "@/lib/types";
+import { RESEARCH_DURATION_SECONDS, type Challenge, type ResearchBrief } from "@/lib/types";
 import { ResearchTimer } from "../research-timer";
 import { StageHeading } from "../stage-heading";
 import { TopicMeta } from "../topic-meta";
@@ -12,14 +12,16 @@ export function ResearchStage({
   challenge,
   brief,
   startedAt,
+  clockSpeed,
   onFinish,
 }: {
   challenge: Challenge;
   brief: ResearchBrief;
   startedAt: number;
+  clockSpeed: number;
   onFinish: () => void;
 }) {
-  const left = useCountdown(startedAt, RESEARCH_DURATION_SECONDS, playTimeUp, RESEARCH_CLOCK_SPEED);
+  const left = useCountdown(startedAt, RESEARCH_DURATION_SECONDS, playTimeUp, clockSpeed);
   const { topic } = challenge;
   const hasNotes = Boolean(brief.summary) || brief.sections.length > 0 || brief.keyPoints.length > 0;
 
