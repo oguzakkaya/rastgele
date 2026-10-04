@@ -21,7 +21,7 @@ export function ResearchStage({
   clockSpeed: number;
   onFinish: () => void;
 }) {
-  const left = useCountdown(startedAt, RESEARCH_DURATION_SECONDS, playTimeUp, clockSpeed);
+  const left = useCountdown(startedAt, RESEARCH_DURATION_SECONDS, playTimeUp, clockSpeed, true);
   const { topic } = challenge;
   const hasNotes = Boolean(brief.summary) || brief.sections.length > 0 || brief.keyPoints.length > 0;
 

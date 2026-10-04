@@ -3,7 +3,13 @@ import { flowReducer, initialFlowState, notesVisible, type FlowState } from "@/l
 import { fromActive, toActive } from "@/lib/challenge/persistence";
 import { getFallbackBrief } from "@/lib/topics/fallback";
 import { RESEARCH_DURATION_SECONDS, type Challenge } from "@/lib/types";
-import { challengePath, formatClock, remainingSeconds, researchClockSpeed } from "@/lib/utils/time";
+import {
+  challengePath,
+  formatClock,
+  remainingSeconds,
+  researchClockSpeed,
+  researchRemainingSeconds,
+} from "@/lib/utils/time";
 import { makeTopic } from "./fixtures";
 
 const topic = makeTopic("t1");
@@ -26,6 +32,13 @@ describe("timer state", () => {
     expect(remainingSeconds(0, 180, 500_000)).toBe(0);
     expect(remainingSeconds(0, 900, 500, 2)).toBe(899);
     expect(remainingSeconds(0, 900, 450_000, 2)).toBe(0);
+    expect(researchRemainingSeconds(0, 900, 1_000, 2)).toBe(899);
+    expect(researchRemainingSeconds(0, 900, 15_000, 2)).toBe(885);
+    expect(researchRemainingSeconds(0, 900, 15_500, 2)).toBe(884);
+    expect(researchRemainingSeconds(0, 900, 450_000, 2)).toBe(15);
+    expect(researchRemainingSeconds(0, 900, 451_000, 2)).toBe(14);
+    expect(researchRemainingSeconds(0, 900, 465_000, 2)).toBe(0);
+    expect(researchRemainingSeconds(0, 900, 465_000, 1)).toBe(435);
     expect(researchClockSpeed("2x")).toBe(2);
     expect(researchClockSpeed(null)).toBe(1);
     expect(challengePath("yeni", "2x")).toBe("/konu?id=yeni&speed=2x");

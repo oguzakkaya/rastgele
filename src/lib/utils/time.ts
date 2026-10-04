@@ -16,9 +16,37 @@ export function formatDurationTr(totalSeconds: number): string {
   return minutes > 0 ? `${hours} sa ${minutes} dk` : `${hours} sa`;
 }
 
+/** Displayed research seconds that stay at real time at each end of 2x mode. */
+export const RESEARCH_EDGE_SECONDS = 15;
+
 /** `?speed=2x` on the homepage runs the research clock at double speed. */
 export function researchClockSpeed(param: string | null): number {
   return param === "2x" ? 2 : 1;
+}
+
+/**
+ * Research countdown. In 2x mode the first and last 15 displayed seconds
+ * advance once per real second; the middle runs at double speed.
+ */
+export function researchRemainingSeconds(
+  startedAtMs: number,
+  durationSeconds: number,
+  nowMs: number,
+  speed = 1,
+): number {
+  if (speed <= 1) return remainingSeconds(startedAtMs, durationSeconds, nowMs, 1);
+  const realSeconds = Math.max(0, nowMs - startedAtMs) / 1000;
+  const edge = Math.min(RESEARCH_EDGE_SECONDS, Math.floor(durationSeconds / 2));
+  const middleDisplayed = durationSeconds - edge * 2;
+  const middleReal = middleDisplayed / speed;
+  const fastEnd = edge + middleReal;
+  const displayed =
+    realSeconds <= edge
+      ? realSeconds
+      : realSeconds <= fastEnd
+        ? edge + (realSeconds - edge) * speed
+        : edge + middleDisplayed + (realSeconds - fastEnd);
+  return Math.max(0, durationSeconds - Math.min(durationSeconds, Math.floor(displayed)));
 }
 
 /** Topic route that keeps a homepage `speed=2x` flag when one was set. */

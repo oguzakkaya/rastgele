@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { remainingSeconds } from "@/lib/utils/time";
+import { remainingSeconds, researchRemainingSeconds } from "@/lib/utils/time";
 
 /** Re-renders periodically and returns the current time in ms. */
 export function useNow(intervalMs = 250, active = true): number {
@@ -23,9 +23,13 @@ export function useCountdown(
   durationSeconds: number,
   onDone: () => void,
   speed = 1,
+  paceEdges = false,
 ): number {
   const now = useNow();
-  const left = remainingSeconds(startedAt, durationSeconds, Math.max(now, startedAt), speed);
+  const at = Math.max(now, startedAt);
+  const left = paceEdges
+    ? researchRemainingSeconds(startedAt, durationSeconds, at, speed)
+    : remainingSeconds(startedAt, durationSeconds, at, speed);
   const doneRef = useRef(onDone);
   const firedRef = useRef(false);
   const seenRunning = useRef(false);
