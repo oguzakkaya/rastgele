@@ -3,7 +3,7 @@ import type { CategoryChoice, TopicCategory } from "./types";
 export const BRAND = {
   name: "Rastgele",
   description:
-    "Rastgele bir konu öğren, 10 saniye araştır ve sonra kendi cümlelerinle anlat.",
+    "Rastgele bir konu öğren, 15 dakika araştır ve sonra kendi cümlelerinle anlat.",
   seoTitle: "Rastgele — Öğren, düşün, anlat",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 } as const;

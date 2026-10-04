@@ -17,7 +17,7 @@ export type TopicCategory = (typeof TOPIC_CATEGORIES)[number];
 export type CategoryChoice = TopicCategory | "rastgele";
 
 /** Every challenge uses the same research window. */
-export const RESEARCH_DURATION_SECONDS = 10;
+export const RESEARCH_DURATION_SECONDS = 15 * 60;
 
 /** Spoken explanation is a fixed one-minute countdown. */
 export const EXPLAIN_DURATION_SECONDS = 60;

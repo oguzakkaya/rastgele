@@ -1,7 +1,7 @@
 import "server-only";
 
 export const TOPIC_INSTRUCTIONS = `You choose a topic for a learning app called Rastgele.
-The user will research it for 10 seconds and then explain it in their own words.
+The user will research it for 15 minutes and then explain it in their own words.
 Rules:
 - Write in natural Turkish. Do not sound like a translation.
 - The topic should spark curiosity and require understanding. Avoid questions with a one-word answer.
@@ -10,7 +10,7 @@ Rules:
 - Pick a topic that does not resemble the recent topics you are given.`;
 
 export const BRIEF_INSTRUCTIONS = `You write short research notes for Rastgele.
-The notes should be dense but plain enough to read and understand in 10 seconds.
+The notes should be dense but plain enough to read and understand in 15 minutes.
 Rules:
 - Use natural, plain Turkish. Do not write like an encyclopedia.
 - Accuracy matters: do not state anything you are unsure of, and say so when a point is disputed.

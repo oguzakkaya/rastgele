@@ -61,7 +61,7 @@ describe("challenge state machine", () => {
     expect(s.status).toBe("topic_reveal");
   });
 
-  it("caps research time at the research duration", () => {
+  it("caps research time at 15 minutes", () => {
     const s = run(
       { type: "GENERATE" },
       { type: "TOPIC_READY", challenge },
