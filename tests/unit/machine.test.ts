@@ -40,9 +40,15 @@ describe("timer state", () => {
     expect(researchRemainingSeconds(0, 900, 465_000, 2)).toBe(0);
     expect(researchRemainingSeconds(0, 900, 465_000, 1)).toBe(435);
     expect(researchClockSpeed("2x")).toBe(2);
+    expect(researchClockSpeed("3x")).toBe(3);
     expect(researchClockSpeed(null)).toBe(1);
     expect(challengePath("yeni", "2x")).toBe("/konu?id=yeni&speed=2x");
+    expect(challengePath("yeni", "3x")).toBe("/konu?id=yeni&speed=3x");
     expect(challengePath("yeni", null)).toBe("/konu?id=yeni");
+    expect(researchRemainingSeconds(0, 900, 15_000, 3)).toBe(885);
+    expect(researchRemainingSeconds(0, 900, 16_000, 3)).toBe(882);
+    expect(researchRemainingSeconds(0, 900, 305_000, 3)).toBe(15);
+    expect(researchRemainingSeconds(0, 900, 320_000, 3)).toBe(0);
     expect(formatClock(180)).toBe("03:00");
     expect(formatClock(5)).toBe("00:05");
   });

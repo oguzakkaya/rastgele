@@ -16,17 +16,19 @@ export function formatDurationTr(totalSeconds: number): string {
   return minutes > 0 ? `${hours} sa ${minutes} dk` : `${hours} sa`;
 }
 
-/** Displayed research seconds that stay at real time at each end of 2x mode. */
+/** Displayed research seconds that stay at real time at each end of a fast clock. */
 export const RESEARCH_EDGE_SECONDS = 15;
 
-/** `?speed=2x` on the homepage runs the research clock at double speed. */
+/** `?speed=2x` or `?speed=3x` on the homepage speeds up the research clock. */
 export function researchClockSpeed(param: string | null): number {
-  return param === "2x" ? 2 : 1;
+  if (param === "2x") return 2;
+  if (param === "3x") return 3;
+  return 1;
 }
 
 /**
- * Research countdown. In 2x mode the first and last 15 displayed seconds
- * advance once per real second; the middle runs at double speed.
+ * Research countdown. In 2x and 3x mode the first and last 15 displayed seconds
+ * advance once per real second; the middle runs at that speed.
  */
 export function researchRemainingSeconds(
   startedAtMs: number,
@@ -49,10 +51,11 @@ export function researchRemainingSeconds(
   return Math.max(0, durationSeconds - Math.min(durationSeconds, Math.floor(displayed)));
 }
 
-/** Topic route that keeps a homepage `speed=2x` flag when one was set. */
+/** Topic route that keeps a homepage `speed=2x` or `speed=3x` flag when one was set. */
 export function challengePath(id: string, speed: string | null): string {
   const params = new URLSearchParams({ id });
-  if (speed === "2x") params.set("speed", "2x");
+  const rate = researchClockSpeed(speed);
+  if (rate > 1) params.set("speed", `${rate}x`);
   return `/konu?${params.toString()}`;
 }
 

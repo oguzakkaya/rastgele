@@ -2,7 +2,7 @@ import type { FallbackTopicSeed } from "./types";
 
 /**
  * Prepared topics. Open the site with `?id=` set to one of these ids, then press start to get that topic.
- * Add `speed=2x` on the homepage to run the research clock at double speed, with the first and last 15 seconds at real time.
+ * Add `speed=2x` or `speed=3x` on the homepage to speed up the research clock, with the first and last 15 seconds at real time.
  */
 export const FALLBACK_SEEDS: FallbackTopicSeed[] = [
   { id: "fermi-paradoksu", title: "Fermi Paradoksu", category: "bilim" },
