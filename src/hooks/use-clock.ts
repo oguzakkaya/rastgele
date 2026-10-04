@@ -18,9 +18,14 @@ export function useNow(intervalMs = 250, active = true): number {
  * Countdown derived from a fixed start time, so it stays correct even if
  * the tab is throttled in the background. Calls onDone once at zero.
  */
-export function useCountdown(startedAt: number, durationSeconds: number, onDone: () => void): number {
+export function useCountdown(
+  startedAt: number,
+  durationSeconds: number,
+  onDone: () => void,
+  speed = 1,
+): number {
   const now = useNow();
-  const left = remainingSeconds(startedAt, durationSeconds, Math.max(now, startedAt));
+  const left = remainingSeconds(startedAt, durationSeconds, Math.max(now, startedAt), speed);
   const doneRef = useRef(onDone);
   const firedRef = useRef(false);
   const seenRunning = useRef(false);

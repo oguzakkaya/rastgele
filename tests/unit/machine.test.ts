@@ -24,6 +24,8 @@ describe("timer state", () => {
     expect(remainingSeconds(0, 180, 0)).toBe(180);
     expect(remainingSeconds(0, 180, 59_900)).toBe(121);
     expect(remainingSeconds(0, 180, 500_000)).toBe(0);
+    expect(remainingSeconds(0, 900, 500, 2)).toBe(899);
+    expect(remainingSeconds(0, 900, 450_000, 2)).toBe(0);
     expect(formatClock(180)).toBe("03:00");
     expect(formatClock(5)).toBe("00:05");
   });

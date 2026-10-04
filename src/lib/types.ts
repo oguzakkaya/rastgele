@@ -19,6 +19,9 @@ export type CategoryChoice = TopicCategory | "rastgele";
 /** Every challenge uses the same research window. */
 export const RESEARCH_DURATION_SECONDS = 15 * 60;
 
+/** Displayed research seconds that pass for each real second. */
+export const RESEARCH_CLOCK_SPEED = 2;
+
 /** Spoken explanation is a fixed one-minute countdown. */
 export const EXPLAIN_DURATION_SECONDS = 60;
 

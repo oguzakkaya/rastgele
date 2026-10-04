@@ -26,12 +26,15 @@ export function minutesCopy(seconds: number): string {
 /**
  * Pure countdown math so the UI hook and tests share one source of truth.
  * Returns remaining whole seconds, never below zero.
+ * `speed` is how many displayed seconds pass per real second.
  */
 export function remainingSeconds(
   startedAtMs: number,
   durationSeconds: number,
   nowMs: number,
+  speed = 1,
 ): number {
-  const elapsed = Math.floor((nowMs - startedAtMs) / 1000);
+  const elapsedMs = Math.max(0, nowMs - startedAtMs);
+  const elapsed = Math.floor((elapsedMs * speed) / 1000);
   return Math.max(0, durationSeconds - elapsed);
 }
