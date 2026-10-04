@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { FALLBACK_TOPICS } from "@/lib/topics/fallback";
-import { blockedCategory, pushRecent, selectTopic } from "@/lib/topics/selection";
+import { RECENT_LIMIT, blockedCategory, pushRecent, selectTopic } from "@/lib/topics/selection";
 import type { RecentTopicEntry } from "@/lib/types";
 import { seededRng } from "@/lib/utils/random";
 import { makeTopic } from "./fixtures";
@@ -19,12 +19,16 @@ describe("topic randomization", () => {
     const rng = seededRng(42);
     let recent: RecentTopicEntry[] = [];
     const seen = new Set<string>();
+    const categories = new Set<string>();
     for (let i = 0; i < FALLBACK_TOPICS.length; i++) {
       const t = selectTopic(FALLBACK_TOPICS, { categories: [] }, recent, rng);
+      expect(recent.some((entry) => entry.topicId === t.id)).toBe(false);
       seen.add(t.id);
+      categories.add(t.category);
       recent = pushRecent(recent, t);
     }
-    expect(seen.size).toBe(FALLBACK_TOPICS.length);
+    expect(seen.size).toBeGreaterThan(RECENT_LIMIT);
+    expect(categories.size).toBe(new Set(FALLBACK_TOPICS.map((topic) => topic.category)).size);
   });
 });
 
