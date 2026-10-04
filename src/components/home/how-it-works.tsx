@@ -1,6 +1,6 @@
 const STEPS = [
   { title: "Rastgele konu gelir", text: "Ne olacağını bilmiyorsun. Tarih de olabilir, ahtapotlar da." },
-  { title: "AI kullanmadan araştır", text: "15 dakika zamanın var. Notları oku, kafanda toparla." },
+  { title: "AI kullanmadan araştır", text: "10 saniye zamanın var. Notları oku, kafanda toparla." },
   { title: "Kendi cümlelerinle anlat", text: "1 dakika zamanın var. Ne öğrendiğini örneklerle anlat." },
 ];
 

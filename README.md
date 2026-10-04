@@ -2,12 +2,12 @@
 
 **Preview:** https://rastgeleco.github.io/rastgele/
 
-Rastgele is a Turkish learning and speaking game. A random topic appears, you research it for 15 minutes, the notes close, and you explain the topic in your own words for 1 minute.
+Rastgele is a Turkish learning and speaking game. A random topic appears, you research it for 10 seconds, the notes close, and you explain the topic in your own words for 1 minute.
 
 ## Product flow
 
-1. **Home**: a start button with a multi-select category list to its right (default All). Every topic uses a 15-minute research window.
-2. **Topic reveal** (`/konu?id=`): a short opening animation, then the topic and the 15-minute window.
+1. **Home**: a start button with a multi-select category list to its right (default All). Every topic uses a 10-second research window.
+2. **Topic reveal** (`/konu?id=`): a short opening animation, then the topic and the 10-second window.
 3. **Research**: the topic, a countdown, and research notes when they exist. At 00:00 the screen stays on the time-up message until you press the button.
 4. **Transition**: the notes close. They cannot be opened again in the same attempt, even after a reload.
 5. **Speaking**: a 1-minute countdown starts in the center. There is no text field and no buttons.

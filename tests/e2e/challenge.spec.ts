@@ -8,7 +8,7 @@ test("full random challenge flow", async ({ page }) => {
   await page.getByRole("button", { name: "Rastgele Başla" }).click();
 
   // Topic reveal
-  await expect(page.getByText("15 dakikan var.")).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByText("10 saniyen var.")).toBeVisible({ timeout: 15_000 });
   await expect(page).toHaveURL(/\/konu\?id=k-/);
   const title = await page.getByRole("heading", { level: 1 }).innerText();
   expect(title.length).toBeGreaterThan(3);
